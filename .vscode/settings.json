@@ -1,0 +1,6 @@
+{
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.runtime": "./node_modules/.bin/eslint"
+}

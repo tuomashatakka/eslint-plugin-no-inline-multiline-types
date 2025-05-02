@@ -1,0 +1,29 @@
+{
+  "name": "eslint-plugin-no-inline-multiline-types",
+  "version": "0.0.0",
+  "description": "ESLint rule to disallow multiline inline type definitions",
+  "main": "lib/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/lib/rules/no-inline-multiline-types.test.js"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "typescript"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/parser": "^7.0.0 || ^8.0.0",
+    "eslint": ">=9.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.0.0"
+  },
+  "engines": {
+    "node": ">=18.18.0 || >=20.9.0"
+  }
+}
