@@ -1,6 +1,6 @@
 /**
  * @fileoverview Tests for no-inline-multiline-types rule.
- * @author Your Name/My Custom Plugin
+ * @author tuomashatakka
  */
 
 //------------------------------------------------------------------------------
