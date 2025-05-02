@@ -2,7 +2,7 @@
   "name": "eslint-plugin-no-inline-multiline-types",
   "version": "0.0.1",
   "description": "ESLint rule to disallow multiline inline type definitions",
-  "main": "lib/index.js",
+  "main": "lib/index.mjs",
   "type": "module",
   "scripts": {
     "test": "node tests/lib/rules/no-inline-multiline-types.test.js"
