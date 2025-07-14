@@ -7,7 +7,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from "../../../lib/rules/no-inline-multiline-types.js";
+import rule from "../../../lib/rules/no-inline-multiline-types.mjs";
 import { RuleTester } from "eslint";
 import typescriptEslintParser from "@typescript-eslint/parser";
 
@@ -27,13 +27,6 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("no-inline-multiline-types", rule, {
   valid: [
-    // Single line inline type annotation
-    `function Button({ label, onClick }: { label: string; onClick: () => void }) {}`,
-    `let cfg: { host: string; port: number };`,
-    `function getCfg(): { host: string; port: number } { return {host:'', port:0}; }`,
-    `class C { prop: { x: number; y: string }; }`,
-    `class D { constructor(p: { x: number }) {} }`,
-
     // Using a named interface/type (preferred)
     `interface BtnProps { submitForm: () => void; input: string; }
      function Button(props: BtnProps) {}`,
@@ -59,7 +52,6 @@ ruleTester.run("no-inline-multiline-types", rule, {
         }
     }
     `,
-    // *** MOVED FROM INVALID ***
     // Multiline TSTypeLiteral *within* a type alias definition is allowed
     `
     type Wrapper = {
@@ -70,7 +62,6 @@ ruleTester.run("no-inline-multiline-types", rule, {
         }
     }
     `,
-    // *** MOVED FROM INVALID ***
     // Multiline TSTypeLiteral *within* an interface definition is allowed
     `
     interface IWrapper {
@@ -84,6 +75,33 @@ ruleTester.run("no-inline-multiline-types", rule, {
   ],
 
   invalid: [
+    // Single line inline type annotation - now invalid
+    {
+      code: `function Button({ label, onClick }: { label: string; onClick: () => void }) {}`,
+      output: `type ButtonProps = { label: string; onClick: () => void };\n\nfunction Button({ label, onClick }: ButtonProps) {}`,
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 1, column: 37 }],
+    },
+    {
+      code: `let cfg: { host: string; port: number };`,
+      output: `type CfgType = { host: string; port: number };\n\nlet cfg: CfgType;`,
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 1, column: 10 }],
+    },
+    {
+      code: `function getCfg(): { host: string; port: number } { return {host:'', port:0}; }`,
+      output: `type GetCfgReturnType = { host: string; port: number };\n\nfunction getCfg(): GetCfgReturnType { return {host:'', port:0}; }`,
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 1, column: 20 }],
+    },
+    {
+      code: `class C { prop: { x: number; y: string }; }`,
+      output: `type PropType = { x: number; y: string };\n\nclass C { prop: PropType; }`,
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 1, column: 17 }],
+    },
+    {
+      code: `class D { constructor(p: { x: number }) {} }`,
+      output: `type PType = { x: number };\n\nclass D { constructor(p: PType) {} }`,
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 1, column: 26 }],
+    },
+
     // Multiline inline type in variable declaration annotation
     {
       code: `
@@ -102,7 +120,7 @@ ruleTester.run("no-inline-multiline-types", rule, {
 
 let myConfig: MyConfigType;
       `, // Note: Exact whitespace might differ slightly based on fixer behavior
-      errors: [{ messageId: "multilineInlineType", type: "TSTypeLiteral", line: 2, column: 21 }],
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 2, column: 21 }],
     },
     // Multiline inline type in function parameter annotation
     {
@@ -130,7 +148,7 @@ function PureSendButton ({
         uploadQueue,
       }: PureSendButtonProps) {}
       `,
-      errors: [{ messageId: "multilineInlineType", type: "TSTypeLiteral", line: 6, column: 10 }],
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 6, column: 10 }],
     },
     // Multiline inline type in return type annotation
     {
@@ -154,7 +172,7 @@ function fetchData(): FetchDataReturnType {
         return { data: [], error: null, status: 200 };
       }
       `,
-      errors: [{ messageId: "multilineInlineType", type: "TSTypeLiteral", line: 2, column: 29 }],
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 2, column: 29 }],
     },
     // Multiline inline type in constructor parameter property annotation
     {
@@ -180,7 +198,7 @@ class MyClass {
         ) {}
       }
       `,
-      errors: [{ messageId: "multilineInlineType", type: "TSTypeLiteral", line: 4, column: 27 }],
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 4, column: 27 }],
     },
     // Multiline inline type in class property annotation
     {
@@ -202,7 +220,7 @@ class AnotherClass {
           options: OptionsType;
       }
       `,
-      errors: [{ messageId: "multilineInlineType", type: "TSTypeLiteral", line: 3, column: 20 }],
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 3, column: 20 }],
     },
     // Test with export
     {
@@ -224,7 +242,7 @@ export const getConfig = (): GetConfigReturnType => {
           return { debug: true, level: 'info' };
       };
       `,
-      errors: [{ messageId: "multilineInlineType", type: "TSTypeLiteral", line: 2, column: 36 }],
+      errors: [{ messageId: "inlineType", type: "TSTypeLiteral", line: 2, column: 36 }],
     }
   ],
 });
